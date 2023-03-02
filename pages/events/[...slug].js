@@ -1,12 +1,13 @@
-import { Fragment, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import { Fragment, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import useSWR from "swr";
+import Head from "next/head";
 
-import { getFilteredEvents } from '../../helpers/api-util';
-import EventList from '../../components/events/event-list';
-import ResultsTitle from '../../components/events/results-title';
-import Button from '../../components/ui/button';
-import ErrorAlert from '../../components/ui/error-alert';
+import { getFilteredEvents } from "../../helpers/api-util";
+import EventList from "../../components/events/event-list";
+import ResultsTitle from "../../components/events/results-title";
+import Button from "../../components/ui/button";
+import ErrorAlert from "../../components/ui/error-alert";
 
 function FilteredEventsPage(props) {
   const [loadedEvents, setLoadedEvents] = useState();
@@ -15,8 +16,8 @@ function FilteredEventsPage(props) {
   const filterData = router.query.slug;
 
   const { data, error } = useSWR(
-    'https://nextjs-course-c81cc-default-rtdb.firebaseio.com/events.json',
-    (url) => fetch(url).then(res => res.json())
+    "https://nextjs-course-c81cc-default-rtdb.firebaseio.com/events.json",
+    (url) => fetch(url).then((res) => res.json())
   );
 
   useEffect(() => {
@@ -34,8 +35,15 @@ function FilteredEventsPage(props) {
     }
   }, [data]);
 
+  // const pageHeadeData = (
+  //   <Head>
+  //     <title>Filtered Events</title>
+  //     <meta name="description" content="Filtered Events" />
+  //   </Head>
+  // );
+
   if (!loadedEvents) {
-    return <p className='center'>Loading...</p>;
+    return <p className="center">Loading...</p>;
   }
 
   const filteredYear = filterData[0];
@@ -58,8 +66,8 @@ function FilteredEventsPage(props) {
         <ErrorAlert>
           <p>Invalid filter. Please adjust your values!</p>
         </ErrorAlert>
-        <div className='center'>
-          <Button link='/events'>Show All Events</Button>
+        <div className="center">
+          <Button link="/events">Show All Events</Button>
         </div>
       </Fragment>
     );
@@ -79,8 +87,8 @@ function FilteredEventsPage(props) {
         <ErrorAlert>
           <p>No events found for the chosen filter!</p>
         </ErrorAlert>
-        <div className='center'>
-          <Button link='/events'>Show All Events</Button>
+        <div className="center">
+          <Button link="/events">Show All Events</Button>
         </div>
       </Fragment>
     );
@@ -95,6 +103,10 @@ function FilteredEventsPage(props) {
     </Fragment>
   );
 }
+// 해당 페이지의 경우, 어떤 페이지를 사전 생성해야지 결정하기 어려움
+// (사람마다 조회할 년, 월이 다름)
+// 그렇다고 모든 페이지를 사전 생성하는 것도 비효율적임
+// --> SSR 적용 (들어오는 모든 요청에 대해 즉시 데이터를 페칭하여 페이지 반환)
 
 // export async function getServerSideProps(context) {
 //   const { params } = context;

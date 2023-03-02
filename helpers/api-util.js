@@ -1,5 +1,7 @@
 export async function getAllEvents() {
-  const response = await fetch('https://nextjs-course-c81cc-default-rtdb.firebaseio.com/events.json');
+  const response = await fetch(
+    "https://raw.githubusercontent.com/Kenny-Korea/JSON_Repository/main/events"
+  );
   const data = await response.json();
 
   const events = [];
@@ -7,7 +9,8 @@ export async function getAllEvents() {
   for (const key in data) {
     events.push({
       id: key,
-      ...data[key]
+      // 일일이 열거하지 않고 아래와 같이 spread 연산자를 사용하면 됨
+      ...data[key],
     });
   }
 
@@ -31,7 +34,9 @@ export async function getFilteredEvents(dateFilter) {
 
   let filteredEvents = allEvents.filter((event) => {
     const eventDate = new Date(event.date);
-    return eventDate.getFullYear() === year && eventDate.getMonth() === month - 1;
+    return (
+      eventDate.getFullYear() === year && eventDate.getMonth() === month - 1
+    );
   });
 
   return filteredEvents;
